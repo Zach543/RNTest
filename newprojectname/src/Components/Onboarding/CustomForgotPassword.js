@@ -1,5 +1,6 @@
 import React from 'react';
-import {  } from 'aws-amplify-react-native';
+import { ErrorRow } from 'aws-amplify-react-native';
+import { Auth } from 'aws-amplify';
 import { Text, TextInput, View, StyleSheet, TouchableOpacity } from 'react-native';
 
 export default class CustomForgotPassword extends React.Component {
@@ -20,14 +21,24 @@ export default class CustomForgotPassword extends React.Component {
             console.log("go back")
             this.props.navigation.goBack()
         } else {
-            console.log("go to sign in")
-            console.log(this.props.screenProps)
-            this.props.screenProps.goToSignIn()
+            this.props.onStateChange("signIn")
         }
     }
 
     submit() {
-
+        Auth.forgotPassword(this.state.username)
+        .then(data => {
+            console.log("Data: " + data)
+            //go to confirm page
+        })
+        .catch(err => {
+            console.log("Error: " + JSON.stringify(err))
+            if (err.message != null) {
+                this.setState({error: err.message})
+            } else {
+                this.setState({error: err})
+            }
+        });
     }
 
     fromSideMenu() {
@@ -55,14 +66,13 @@ export default class CustomForgotPassword extends React.Component {
                     <TouchableOpacity style={styles.button} onPress={() => this.goBack()}>
                         <Text style={styles.buttonText}>Cancel</Text>
                     </TouchableOpacity>
-                    {/* <ErrorRow theme={theme}>{this.state.error}</ErrorRow> */}
+                    <ErrorRow>{this.state.error}</ErrorRow>
                 </View>
             );
         } else {
             return null;
         }
     }
-
 }
 
 const styles = StyleSheet.create({

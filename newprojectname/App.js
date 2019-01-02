@@ -5,9 +5,7 @@ import authConfig from './authConfig';
 import aws_config from './aws-exports';
 import {
   withAuthenticator,
-  SignIn,
   SignUp,
-  ForgotPassword,
   Loading
 } from 'aws-amplify-react-native';
 
@@ -43,12 +41,6 @@ class App extends React.Component {
         .catch(err => console.log('err: ', err))
   }
 
-  goToSignIn = () => {
-    console.log("Go To Sign In");
-    this.props.onStateChange('signIn');
-    console.log(this.props.authState)
-  }
-
   render() {
     return (
       <ApolloProvider client={client}>
@@ -62,4 +54,4 @@ class App extends React.Component {
 
 const AppContainer = createAppContainer(DrawerNavigator);
 
-export default withAuthenticator(App, false, [<CustomSignIn/>, <SignUp/>, <CustomForgotPassword screenProps={{goToSignIn: () => this.goToSignIn}}/>, <Loading/>]);
+export default withAuthenticator(App, false, [<CustomSignIn/>, <SignUp/>, <CustomForgotPassword screenProps={{onStateChange: (state) => this.props.onStateChange(state)}}/>, <Loading/>]);
